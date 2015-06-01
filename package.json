@@ -1,0 +1,40 @@
+{
+  "name": "ti-proxy",
+  "version": "1.0.0",
+  "description": "Parse JavaScript to proxy Titanium API calls",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "uglify-js": "^2.4.23"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-mocha-test": "^0.12.7",
+    "grunt-titaniumifier": "^1.1.0",
+    "mocha": "^2.2.5",
+    "should": "^6.0.3"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fokkezb/ti-proxy"
+  },
+  "keywords": [
+    "titanium",
+    "appcelerator",
+    "titaniumifier"
+  ],
+  "author": "Fokke Zandbergen",
+  "license": "Apache Public License v2",
+  "bugs": {
+    "url": "https://github.com/fokkezb/ti-proxy/issues"
+  },
+  "homepage": "https://github.com/fokkezb/ti-proxy",
+  "titaniumManifest": {
+    "guid": "bcb86ab4-f59c-a630-e8f9-d589c845159d"
+  }
+}
