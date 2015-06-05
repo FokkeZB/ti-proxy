@@ -1,4 +1,4 @@
-__proxy.log("log", "hi");
+try {__proxy.log("log", "hi");
 
 __proxy.log("log", "hello", "world");
 
@@ -18,4 +18,4 @@ __proxy.log("error", "error");
 
 __proxy.log(variable, "error" + content);
 
-__proxy.log("error", "error");
+__proxy.log("error", "error");} catch (e) { e.filename = __filename; __proxy.exception(e); }

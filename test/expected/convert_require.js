@@ -1,4 +1,4 @@
-__proxy.require("hello");
+try {__proxy.require("hello");
 
 a.require("not this one");
 
@@ -10,4 +10,4 @@ tirequire("/path" + variable + "/path");
 
 _require("/path" + variable + "/path");
 
-require.subfunction("no");
+require.subfunction("no");} catch (e) { e.filename = __filename; __proxy.exception(e); }

@@ -34,44 +34,61 @@ var proxy = module.exports = {
 	},
 
 	/**
+	 * Receives an uncaught exception.
+	 * @param  {Object} exc           Exception caught
+	 * @param  {string} exec.filename Filename in which the exception was thrown
+	 * @param  {string} exec.error    The original error
+	 */
+	exception: function (exc) {
+		throw 'Not Implemented: exception';
+	},
+
+	/**
 	 * Takes a path, an Array of paths or a single path split in multiple arguments.
-	 * Returns the full path to the resource.
-	 * @param {string|Array} Single path, Array of paths or the first part
+	 * Returns the full path to the resource or the resourcesDirectory if no arguments are given.
+	 * @param {string|Array} Single path, Array of paths, the first of multiple parts of a part or none for the resourceDirectory
 	 * @return {string} Full path to resource
 	 */
 	resource: function () {
 
+		if (arguments.length === 0) {
+			return proxy._resource();
+		}
+
 		if (Array.isArray(arguments[0])) {
-			return arguments[0].map(proxy.resource);
+			return arguments[0].map(proxy._resource);
 		}
 
 		if (arguments.length > 1) {
-			var normalized = '';
+			var path = '';
 
 			for (var i = 0; i < arguments.length; i++) {
 				var argument = arguments[i];
 
 				// only adds a slash when left arguments don't have it
-				if (normalized.charAt(normalized.length - 1) !== '/' && argument.charAt(0) !== '/' && i !== 0) {
-					normalized += '/' + argument;
+				if (path.charAt(path.length - 1) !== '/' && argument.charAt(0) !== '/' && i !== 0) {
+					path += '/' + argument;
 				} else {
-					normalized += argument;
+					path += argument;
 				}
 			}
 
-			return proxy.resource(normalized);
+			return proxy._resource(path);
 		}
 
-		throw 'Not Implemented: resource';
+		return proxy._resource(arguments[0]);
 	},
 
-	/**
-	 * Return path to resourcesDirectory with no trailing slash on the end.
-	 * @return {string} Path to resources directory
-	 */
-	getResourcesDirectory: function () {
+	_resource: function (path) {
 
-		throw 'Not Implemented: getResourcesDirectory';
+		// return path to codebase
+		if (!path) {
+			throw 'Not Implemented: resource';
+
+			// return parth to resource
+		} else {
+			throw 'Not Implemented: resource';
+		}
 	},
 
 	/**
@@ -79,7 +96,7 @@ var proxy = module.exports = {
 	 * @param {string} key  String key
 	 * @param {string} hint Fallback
 	 */
-	L: function (key, hint) {
+	i18n: function (key, hint) {
 		throw 'Not Implemented: L';
 	},
 
@@ -93,7 +110,7 @@ var proxy = module.exports = {
 	},
 
 	/**
-	 * Requires a CommonJS or native module
+	 * Requires a CommonJS or native module.
 	 * @param  {string} moduleId Module ID
 	 * @return {[type]}          Loaded or cached module
 	 */
@@ -101,8 +118,13 @@ var proxy = module.exports = {
 		throw 'Not Implemented: require';
 	},
 
-	UI: {
-		
+	/**
+	 * Calls a Ti.UI factory and returns the view.
+	 * @param {[type]} ns      [description]
+	 * @param {[type]} factory [description]
+	 */
+	UI: function (ns, factory) {
+		throw 'Not Implemented: UI';
 	}
 
 };

@@ -19,7 +19,7 @@ describe('lib/index', function () {
 
 	files.forEach(function (file) {
 
-		describe('#file', function () {
+		it('should convert ' + file + ' as expected', function () {
 
 			var fixture = fs.readFileSync(path.join(PATH_FIXTURES, file), {
 				encoding: 'utf-8'
@@ -39,7 +39,7 @@ describe('lib/index', function () {
 				console.log('###');
 			}
 
-			converted.should.eql(expected);
+			converted.should.equal(expected);
 		});
 	});
 

@@ -1,4 +1,4 @@
-eval(Ti.Filesystem.getFile(__proxy.resource("hello")));
+try {eval(Ti.Filesystem.getFile(__proxy.resource("hello")));
 
 eval(Ti.Filesystem.getFile(__proxy.resource("/asf/asdf/asdf/asdf")));
 
@@ -10,4 +10,4 @@ ApTi.include("no way");
 
 Ti.happy.include("happy");
 
-eval(Ti.Filesystem.getFile(__proxy.resource(object)));
+eval(Ti.Filesystem.getFile(__proxy.resource(object)));} catch (e) { e.filename = __filename; __proxy.exception(e); }
