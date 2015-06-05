@@ -19,3 +19,7 @@ var app = fn(myProxy);
 ```
 
 See [proxy-interface.js](proxy-interface.js) for an example proxy.
+
+## Credits
+
+Original converter code by [David Bankier](https://github.com/dbankier/TiShadow/blob/master/cli/support/uglify.js).
