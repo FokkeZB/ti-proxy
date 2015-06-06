@@ -95,7 +95,9 @@ var proxy = module.exports = {
 	// setting include to true here will enable it if you pass the proxy
 	// instead of a normal options object
 	include: true,
-	globals: true,
+
+	// will collect globals
+	globals: {},
 
 	/**
 	 * Return translation for key or fallback to hint.
