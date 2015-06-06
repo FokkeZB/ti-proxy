@@ -6,11 +6,14 @@ var Transformer = require('./lib/transformer');
 exports.convert = function convert(code, options) {
 	options = options || {};
 	options.ns = options.ns || '__proxy';
-	options.exceptions = options.exceptions !== false;
 
 	var ast = UglifyJS.parse(code);
 
 	var transformer = Transformer.create(options);
+
+	if (options.globals) {
+		ast.figure_out_scope();
+	}
 
 	ast = ast.transform(transformer);
 
@@ -18,8 +21,8 @@ exports.convert = function convert(code, options) {
 		beautify: options.beautify !== true
 	});
 
-	if (options.exceptions !== false) {
-		code = 'try {' + code + '} catch (err) { ' + options.ns + '.exception({ filename: __filename, error: err }); }';
+	if (options.exception !== false) {
+		code = 'try {' + code + '} catch (e) { e.filename = __filename; ' + options.ns + '.exception(e); }';
 	}
 
 	return code;
@@ -30,19 +33,25 @@ var UglifyJS = require('uglify-js');
 
 exports.create = function create(options) {
 	options = options || {};
-
 	options.ns = options.ns || '__proxy';
 
-	options.exceptions = options.exceptions !== false;
-	options.events = options.events !== false;
-	options.i18n = options.i18n !== false;
-	options.include = options.include !== false;
-	options.log = options.log !== false;
-	options.require = options.require !== false;
-	options.resources = options.resources !== false;
-	options.UI = options.UI !== false;
-
 	return new UglifyJS.TreeTransformer(null, function (node) {
+
+		if (options.globals) {
+
+			if (node instanceof UglifyJS.AST_SymbolVar && node.global()) {
+				var originalName = node.thedef.name;
+				node.thedef.name = options.ns + '.globals.' + node.thedef.name;
+
+				return new UglifyJS.AST_VarDef({
+					name: new UglifyJS.AST_SymbolConst({
+						name: originalName
+					}),
+					value: node
+				});
+			}
+
+		}
 
 		if (node instanceof UglifyJS.AST_Call) {
 
@@ -78,12 +87,12 @@ exports.create = function create(options) {
 
 				// L()
 				if (node.expression.start.value === 'L') {
-					node.name = node.expression.name = options.ns + '.L';
+					node.name = node.expression.name = options.ns + '.i18n';
 					return node;
 				}
 			}
 
-			if (node.expression.start.value.match && node.expression.start.value.match('^Ti(tanium)?$')) {
+			if (isCallingTi(node)) {
 
 				// Ti.include
 				if (options.include) {
@@ -93,12 +102,12 @@ exports.create = function create(options) {
 					}
 				}
 
-				if (options.resources) {
+				if (options.resource) {
 
 					// Ti.Filesystem.getResourcesDirectory()
 					if (node.expression.end.value === 'getResourcesDirectory' &&
 						node.expression.expression.property === 'Filesystem') {
-						return functionCall(options.ns + '.getResourcesDirectory');
+						return functionCall(options.ns + '.resource');
 					}
 
 					// Ti.Filesystem.getFile()
@@ -121,7 +130,7 @@ exports.create = function create(options) {
 					// Locale.getString()
 					if (node.expression.end.value === 'getString' &&
 						node.expression.expression.property === 'Locale') {
-						return functionCall(options.ns + '.L', node.args);
+						return functionCall(options.ns + '.i18n', node.args);
 					}
 				}
 
@@ -177,7 +186,7 @@ exports.create = function create(options) {
 				}
 			}
 
-			if (options.resources) {
+			if (options.resource) {
 
 				// setBackgroundImage etc
 				if (node.expression.end.value.match('^set') &&
@@ -190,21 +199,21 @@ exports.create = function create(options) {
 				}
 			}
 
-		} else if (node instanceof UglifyJS.AST_Assign && !doNotTouch(node.right)) {
+		} else if (node instanceof UglifyJS.AST_Assign && node.right) {
 
 			// *.title =
 			if (node.left.property && node.left.property.match && node.left.property.match('^(title|text)id$')) {
 
 				if (options.i18n) {
 					node.left.property = node.left.property.replace('id', '');
-					node.right = functionCall(options.ns + '.L', [node.right]);
+					node.right = functionCall(options.ns + '.i18n', [node.right]);
 					return node;
 				}
 
 				// *.image = 
 			} else if (couldBeAsset(node.left.property, node.right)) {
 
-				if (options.resources) {
+				if (options.resource) {
 
 					if (node.left.property === 'url' && node.operator === '+=') {
 						return node;
@@ -223,14 +232,14 @@ exports.create = function create(options) {
 
 				if (options.i18n) {
 					node.key = node.key.replace('id', '');
-					node.value = functionCall(options.ns + '.L', [node.value]);
+					node.value = functionCall(options.ns + '.i18n', [node.value]);
 					return node;
 				}
 
 				// image:
 			} else if (couldBeAsset(node.key, node.value)) {
 
-				if (options.resources) {
+				if (options.resource) {
 					node.value.value = toFullPath(node.value.value);
 					node.value = functionCall(options.ns + '.resource', [node.value]);
 					return node;
@@ -239,13 +248,13 @@ exports.create = function create(options) {
 
 		} else if (node instanceof UglifyJS.AST_PropAccess) {
 
-			if (options.resources) {
+			if (options.resource) {
 
 				// Ti.Filesystem.getResourcesDirectory()
 				if (node.property === 'resourcesDirectory' &&
 					node.start.value.match('^Ti(tanium)?$') &&
 					node.expression.property === 'Filesystem') {
-					return functionCall(options.ns + '.getResourcesDirectory');
+					return functionCall(options.ns + '.resource');
 				}
 			}
 		}

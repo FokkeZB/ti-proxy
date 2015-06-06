@@ -1,4 +1,5 @@
 module.exports = function (grunt) {
+	var test = grunt.option('test') || '*';
 
 	grunt.initConfig({
 		mochaTest: {
@@ -7,7 +8,7 @@ module.exports = function (grunt) {
 				reporter: 'spec',
 				ignoreLeaks: true
 			},
-			src: ['test/**/*_test.js']
+			src: ['test/**/' + test + '_test.js']
 		},
 		titaniumifier: {
 			js: {

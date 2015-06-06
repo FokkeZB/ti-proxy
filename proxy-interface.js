@@ -91,6 +91,12 @@ var proxy = module.exports = {
 		}
 	},
 
+	// since the proxy interface keys are identical to the options
+	// setting include to true here will enable it if you pass the proxy
+	// instead of a normal options object
+	include: true,
+	globals: true,
+
 	/**
 	 * Return translation for key or fallback to hint.
 	 * @param {string} key  String key

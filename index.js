@@ -5,11 +5,14 @@ var Transformer = require('./lib/transformer');
 exports.convert = function convert(code, options) {
 	options = options || {};
 	options.ns = options.ns || '__proxy';
-	options.exception = options.exception !== false;
 
 	var ast = UglifyJS.parse(code);
 
 	var transformer = Transformer.create(options);
+
+	if (options.globals) {
+		ast.figure_out_scope();
+	}
 
 	ast = ast.transform(transformer);
 
