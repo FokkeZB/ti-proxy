@@ -1,6 +1,6 @@
 try {__proxy.i18n("hello");
 
-var a = __proxy.i18n("hello");
+var a = __proxy.globals.a = __proxy.i18n("hello");
 
 __proxy.i18n("hello").split("l");
 

@@ -2,7 +2,7 @@ try {__proxy.require("hello");
 
 a.require("not this one");
 
-var Hello = __proxy.require("Hello");
+var Hello = __proxy.globals.Hello = __proxy.require("Hello");
 
 __proxy.require("/path" + variable + "/path");
 
