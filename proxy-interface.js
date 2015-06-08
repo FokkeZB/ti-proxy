@@ -56,7 +56,9 @@ var proxy = module.exports = {
 		}
 
 		if (Array.isArray(arguments[0])) {
-			return arguments[0].map(proxy._resource);
+			return arguments[0].map(function (val) {
+				return proxy._resource(val);
+			});
 		}
 
 		if (arguments.length > 1) {
@@ -95,6 +97,7 @@ var proxy = module.exports = {
 	// setting include to true here will enable it if you pass the proxy
 	// instead of a normal options object
 	include: true,
+	exit: true,
 
 	// will collect globals
 	globals: {},
