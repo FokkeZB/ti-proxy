@@ -20,16 +20,6 @@ var proxy = module.exports = {
 		 */
 		removeEventListener: function (ns, name, callback) {
 			throw 'Not Implemented: removeEventListener';
-		},
-
-		/**
-		 * Fires a global event listener.
-		 * @param  {string}   ns       Global NS to listen on (App, Gesture or Geolocation)
-		 * @param  {string}   name     Event name
-		 * @param  {Object}   event    Event payload
-		 */
-		fireEvent: function (ns, name, event) {
-			throw 'Not Implemented: fireEvent';
 		}
 	},
 
